@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IIPC Calculator</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .container {
+      max-width: 500px;
+      margin: 50px auto;
+      background-color: rgb(192, 86, 192);
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1 class="text-center mb-4">IIPC Calculator</h1>
+  <form id="gstCalculator">
+    <div class="form-group">
+      <label for="industry">Industry Name</label>
+      <input type="text" class="form-control" id="industry" placeholder="Enter industry name">
+    </div>
+    <div class="form-group">
+      <label for="amount">Amount (INR)</label>
+      <input type="number" class="form-control" id="amount" placeholder="Enter amount">
+    </div>
+    <div class="form-group">
+      <label for="faculty">Number of Faculty</label>
+      <input type="number" class="form-control" id="faculty" placeholder="Enter number of faculty">
+    </div>
+    <div class="form-group">
+      <label>Service Type:</label><br>
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" name="serviceType" id="consultancyRadio" value="consultancy">
+        <label class="form-check-label" for="consultancyRadio">Consultancy</label>
+      </div>
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" name="serviceType" id="trainingRadio" value="training">
+        <label class="form-check-label" for="trainingRadio">Training</label>
+      </div>
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" name="serviceType" id="testingRadio" value="testing">
+        <label class="form-check-label" for="testingRadio">Testing</label>
+      </div>
+    </div>
+    <button type="submit" class="btn btn-primary">Calculate</button>
+  </form>
+  <div id="result" class="mt-4"></div>
+</div>
+
+<!-- Bootstrap JS and jQuery -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+  document.getElementById('gstCalculator').addEventListener('submit', function(event) {
+    event.preventDefault();
+    var industry = document.getElementById('industry').value.trim();
+    var amount = parseFloat(document.getElementById('amount').value);
+    var faculty = parseInt(document.getElementById('faculty').value);
+    var serviceType = document.querySelector('input[name="serviceType"]:checked').value;
+
+    if (industry === '') {
+      document.getElementById('result').innerHTML = '<div class="alert alert-danger" role="alert">Please enter the industry name.</div>';
+      return;
+    }
+    if (isNaN(amount) || amount <= 0) {
+      document.getElementById('result').innerHTML = '<div class="alert alert-danger" role="alert">Please enter a valid amount.</div>';
+      return;
+    }
+    if (isNaN(faculty) || faculty <= 0) {
+      document.getElementById('result').innerHTML = '<div class="alert alert-danger" role="alert">Please enter a valid number of faculty.</div>';
+      return;
+    }
+
+    var collegeAmount = amount * 0.3; 
+    var facultyAmount = amount * 0.7; 
+    var perFacultyAmount = facultyAmount / faculty; 
+
+    var gst = calculateGST(collegeAmount);
+    var totalCost = calculateTotalCost(collegeAmount, facultyAmount, faculty, serviceType);
+    var resultHTML = '<div class="alert alert-success" role="alert">';
+    resultHTML += 'Industry: ' + industry + '<br>';
+    resultHTML += 'Service Type: ' + serviceType.charAt(0).toUpperCase() + serviceType.slice(1) + '<br>';
+    resultHTML += 'Number of Faculty: ' + faculty + '<br>';
+    resultHTML += 'Amount per Faculty: ' + perFacultyAmount.toFixed(2) + ' INR<br>'; 
+    resultHTML += 'GST Amount: ' + gst.toFixed(2) + ' INR<br>';
+    resultHTML += 'Amount for College: ' + collegeAmount.toFixed(2) + ' INR<br>';
+    resultHTML += 'Amount for Faculty: ' + facultyAmount.toFixed(2) + ' INR<br>';
+    resultHTML += 'Total Cost: ' + totalCost.toFixed(2) + ' INR<br>';
+    resultHTML += '</div>';
+
+    document.getElementById('result').innerHTML = resultHTML;
+  });
+
+  function calculateGST(amount) {
+    
+    return amount * 0.18;
+  }
+
+  function calculateTotalCost(collegeAmount, facultyAmount, faculty, serviceType) {
+    
+    var facultyCost = facultyAmount / faculty; 
+    var totalCost = collegeAmount; 
+
+   
+    switch(serviceType) {
+      case 'consultancy':
+        totalCost += faculty * facultyCost + 5000;
+        break;
+      case 'training':
+        totalCost += faculty * facultyCost + 3000;
+        break;
+      case 'testing':
+        totalCost += faculty * facultyCost + 4000;
+        break;
+    }
+    return totalCost;
+  }
+</script>
