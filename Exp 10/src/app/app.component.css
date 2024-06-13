@@ -1,0 +1,22 @@
+body {
+    font-family: Arial, sans-serif;
+  }
+ 
+  .navbar {
+    background-color: #e2d1d1;
+    overflow: hidden;
+  }
+ 
+  .navbar .nav-link {
+    float: left;
+    display: block;
+    color: #762121;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+  }
+ 
+  .navbar .nav-link:hover {
+    background-color: #91dbd4;
+    color: rgb(180, 12, 12);
+  }
